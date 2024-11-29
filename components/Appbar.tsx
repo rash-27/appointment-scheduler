@@ -1,4 +1,3 @@
-import '../globals.css'
 export default function AppBar({theme, setTheme}:{theme : string, setTheme : any}) {
   
   function handleTheme(){

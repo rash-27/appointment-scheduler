@@ -1,8 +1,7 @@
 "use client"
 import "./globals.css"
 import { useState } from "react";
-import Image from "next/image";
-import AppBar from "./components/Appbar";
+import AppBar from "../components/Appbar";
 
 export default function Home() {
   const [theme, setTheme] = useState('light');
