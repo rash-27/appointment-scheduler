@@ -23,7 +23,7 @@ const AppointmentSchema = new Schema({
     },
     isConfirmed : {
       type : Boolean,
-      default : false
+      default : null,
     }
 });
 

@@ -6,7 +6,7 @@ export const POST = async (request : any) => {
     const { phoneNumber, password, qualification } = await request.json();
     try {
         await connectToDB();
-        const doctor = await Doctor.findOne({ phoneNumber }); 
+        const doctor = await Doctor.findOne({ phoneNumber : phoneNumber }); 
         if (doctor) {
             return new Response("Doctor already exists", { status: 400 });
         }
