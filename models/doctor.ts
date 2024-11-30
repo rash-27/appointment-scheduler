@@ -8,6 +8,11 @@ const DoctorSchema = new Schema({
   },
   password : {
     type: String,
+    required: [true, 'Password is required!'],
+  },
+  name: {
+    type: String,
+    required: [true, 'Name is required!'],
   },
   qualification : {
     type : String,
@@ -25,7 +30,7 @@ const DoctorSchema = new Schema({
     type: String,
     default: null,
   },
-  verifyOTPExpire : {
+  verifyOTPExpiry : {
     type : Date,
     default : null,
   }

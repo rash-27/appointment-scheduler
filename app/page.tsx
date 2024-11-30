@@ -1,14 +1,43 @@
 "use client"
 import "./globals.css"
-import { useState } from "react";
-import AppBar from "../components/Appbar";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function Home() {
-  const [theme, setTheme] = useState('light');
-  return (
-  
-  <div className={` ${(theme=='dark') ? 'bg-background text-white ' : ' '} `}>
-  <AppBar theme={theme} setTheme={setTheme}/>
+  const [user, setUser]= useState(null);
+  const {data : session}= useSession();
+  const router = useRouter();
+
+  useEffect(()=>{
+    if(!session)router.push('/signin')
+    if(session?.user.role == 'DOCTOR'){
+      axios.get(`/api/doctor/${session.user.id}`)
+      .then((res)=>{
+        if(res.status == 200){
+          const user = res.data;
+          if(!user.isVerified)router.push('/verify')
+          else if(!user.isValid) router.push('/validate');
+        } 
+      })
+      .catch((err)=>console.log(err));
+    }else {
+      if(session?.user.role == 'USER'){
+      axios.get(`/api/user/${session?.user.id}`)
+      .then((res)=>{
+       if(res.status == 200){
+           const user = res.data;
+          if(!user.isVerified)router.push('/verify') 
+      }
+      })
+      .catch((err)=>console.log(err));  
+      }
+  }
+},[session])
+
+  return ( 
+  <div className=''>
   Home page
   </div>
  );

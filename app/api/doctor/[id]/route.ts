@@ -7,8 +7,8 @@ export const PUT = async (req, {params}) => {
     
     try {
         await connectToDB();
-    
-        const doctor = await Doctor.findById(params.id);
+         const param = await params;
+        const doctor = await Doctor.findById(param.id);
         if (!doctor) {
             return new Response('Doctor not found', { status: 404 });
         }
@@ -20,6 +20,21 @@ export const PUT = async (req, {params}) => {
         doctor.password = hashedPassword;
         await doctor.save();
         return new Response('Password updated', { status: 200 });
+    } catch (error) {
+        console.log(error);
+        return new Response('Internal server error', { status: 500 });
+    }
+}
+
+export const GET = async (req, {params}) => {
+    try {
+        await connectToDB();
+        const param = await params;
+        const doctor = await Doctor.findById(param.id);
+        if (!doctor) {
+            return new Response('Doctor not found', { status: 404 });
+        }
+        return new Response(JSON.stringify(doctor), { status: 200 });
     } catch (error) {
         console.log(error);
         return new Response('Internal server error', { status: 500 });

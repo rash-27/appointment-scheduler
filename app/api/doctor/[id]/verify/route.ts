@@ -6,8 +6,8 @@ export const POST = async (req, {params}) => {
 
     try {
         await connectToDB();
-    
-        const doctor = await Doctor.findById(params.id);
+        const param = await params; 
+        const doctor = await Doctor.findById(param.id);
         if (!doctor) {
             return new Response('Doctor not found', { status: 404 });
         }

@@ -1,13 +1,13 @@
 import { connectToDB } from '@/utils/database';
 import User from '@/models/user';
 // Update password of user
-export const PUT = async (req, {params}) => {
+export const POST = async (req, {params}) => {
     const { verifyOTP } = await req.json();
 
     try {
         await connectToDB();
-    
-        const user = await User.findById(params.id);
+        const param = await params; 
+        const user = await User.findById(param.id);
         if (!user) {
             return new Response('User not found', { status: 404 });
         }

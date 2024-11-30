@@ -6,10 +6,11 @@ export const POST = async (req, {params}) => {
 
     try {
         await connectToDB();
-    
-        const doctor = await Doctor.findById(params.id);
-        const appointment = await Appointment.findById(params.appointmentId);
-        if (!doctor || !appointment || appointment.doctorId != params.id) {
+
+        const param = await params; 
+        const doctor = await Doctor.findById(param.id);
+        const appointment = await Appointment.findById(param.appointmentId);
+        if (!doctor || !appointment || appointment.doctorId != param.id) {
             return new Response('Appointment cant be rejected', { status: 404 });
         }
         appointment.isConfirmed = false;

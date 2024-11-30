@@ -6,15 +6,15 @@ export const POST = async (req, {params}) => {
     const otp = Math.floor(1000 + Math.random() * 9000);
     try {
         await connectToDB();
-    
-        const user = await User.findById(params.id);
+        const param = await params; 
+        const user = await User.findById(param.id);
         if (!user) {
             return new Response('User not found', { status: 404 });
         }
-        await axios.post(`webHookUrl`,{
-          phoneNumber : user.phoneNumber,
-          otp : otp
-        })
+        //await axios.post(`webHookUrl`,{
+        //  phoneNumber : user.phoneNumber,
+        //  otp : otp
+        //})
         user.verifyOTP = otp;
         // 1 hour limit
         user.verifyOTPExpiry = Date.now() + 3600000; 

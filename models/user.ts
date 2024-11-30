@@ -6,8 +6,13 @@ const UserSchema = new Schema({
     unique: [true, 'Phone Number already exists!'],
     required: [true, 'Phone Number is required!'],
   },
+  name: {
+    type: String,
+    required: [true, 'Name is required!'],
+  },
   password : {
     type: String,
+    required: [true, 'Password is required!'],
   },
   isVerified: {
     type: Boolean,

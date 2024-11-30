@@ -16,7 +16,7 @@ const handler = NextAuth({
         role : { label : "Role", type : "text"}
       },
       // Need to hash the password and validation is done here
-      async authorize(credentials) {
+      async authorize(credentials : any) {
         console.log("Authorizing credentials: ", credentials);
         try {
           await connectToDB();
@@ -29,7 +29,7 @@ const handler = NextAuth({
           if (!isValid) {
             throw new Error('Invalid phoneNumber or password');
           }
-          return { phoneNumber: user.phoneNumber, isVerified : user.isVerified, role : "USER"};
+          return { phoneNumber: user.phoneNumber, isVerified : user.isVerified, role : "USER", isValid : true, name : user.name, id : user._id.toString()};
         }else if(credentials?.role == 'DOCTOR'){
            const doctor = await Doctor.findOne({ phoneNumber : credentials?.phoneNumber });
           if (!doctor) {
@@ -39,7 +39,7 @@ const handler = NextAuth({
           if (!isValid) {
             throw new Error('Invalid phoneNumber or password');
           }
-          return { phoneNumber: doctor.phoneNumber, isVerified : doctor.isVerified, role : "DOCTOR", isValid : doctor.isValid};
+          return { phoneNumber: doctor.phoneNumber, isVerified : doctor.isVerified, role : "DOCTOR", isValid : doctor.isValid, name : doctor.name, id : doctor._id.toString()};
         }else {
           throw new Error('Invalid phoneNumber or password');
 
@@ -55,15 +55,30 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   url: process.env.NEXTAUTH_URL,
   callbacks: {
-    async session({ session }) {
-      // store the user id from MongoDB to session
-      const sessionUser = await User.findOne({ phoneNumber: session.user.phoneNumber });
-      session.user.id = sessionUser._id.toString();
-      session.user.isVerified = sessionUser.isVerified;
-      session.user.role = sessionUser.role;
+    async jwt({token, user}){
+      if(user){
+        token.role = user.role;
+        token.phoneNumber = user.phoneNumber;
+        token.isValid = user.isValid;
+        token.isVerified = user.isVerified;
+        token.id = user.id.toString();
+      }
+      return token;
+    },
+    async session({session, token}) {
+
+        if (token && session.user) {
+          session.user.role = token.role;
+          session.user.phoneNumber = token.phoneNumber;
+          session.user.isValid = token.isValid;
+          session.user.isVerified = token.isVerified;
+          session.user.id = token.id;
+        }
+
       return session;
     },
     async signIn({ account, profile, user, credentials }) {
+
       try {
         await connectToDB();
         if(account?.provider === 'credentials') {
