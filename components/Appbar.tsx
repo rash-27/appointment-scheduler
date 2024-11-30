@@ -39,6 +39,7 @@ export default function AppBar({children}) {
     }
   }
   async function handleLogout(){
+    setOpen(false);
     await signOut({redirect: false});
     router.push('/signin');
   }

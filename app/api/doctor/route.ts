@@ -19,3 +19,14 @@ export const POST = async (request : any) => {
         return new Response("Internal server error", { status: 500 });
     }
 }
+
+export const GET = async (request : any) => {
+    try {
+        await connectToDB();
+        const doctor = await Doctor.find({isValid : true, isVerified : true});
+        return new Response(JSON.stringify({doctors : doctor}), { status: 200 });
+    } catch (error) {
+        console.log(error);
+        return new Response("Internal server error", { status: 500 });
+    }
+}

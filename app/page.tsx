@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Doctor from "@/components/Doctor";
+import User from "@/components/User";
 
 export default function Home() {
   const [user, setUser]= useState(null);
@@ -37,8 +39,12 @@ export default function Home() {
 },[session])
 
   return ( 
-  <div className=''>
-  Home page
+  <div>
+    {(session?.user.role == 'DOCTOR')?
+      <Doctor />
+    : 
+      <User />
+    }
   </div>
  );
 }
