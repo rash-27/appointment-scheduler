@@ -14,7 +14,6 @@ export default function Signup() {
   const [qualification, setQualification] = useState('');
   const router = useRouter();
   const theme = useContext(ThemeContext);
-  console.log(process.env.NEXTAUTH_URL)
   function handleOnClick(){
     if(role == 'USER'){
       axios.post(`/api/user`,{

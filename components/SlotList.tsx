@@ -1,7 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { formatDate, formatTime, isDatesEqual } from "@/utils/utils";
 import { Modal } from "@mui/material";
@@ -9,8 +8,6 @@ import CloseIcon from '@mui/icons-material/Close';
 
 export default function SlotList() {
   const {data : session}= useSession();
-  const [doctorList, setDoctorList] = useState(null);
-  const router = useRouter();
   const date = new Date(); 
   const slots = [9, 10, 11, 13, 14, 15, 16, 17];
   const tempSlots = slots.map((slot)=>{return {app : date.setHours(slot,0,0,0), status : false, userId : '', description : ''}})
@@ -26,7 +23,7 @@ export default function SlotList() {
       if(res.status == 200){
         const filledSlots = res.data.appointments || [];
           setFinalSlots(finalSlots.map((slot)=>{
-            let res = filledSlots.filter((fillSlot)=>{
+            const res = filledSlots.filter((fillSlot)=>{
                   return isDatesEqual(new Date(fillSlot?.appointmentTime), new Date(slot.app));
             })
             if(res.length != 0){
