@@ -39,8 +39,15 @@
 #### Accept or reject appointment 
 ![image](https://github.com/user-attachments/assets/f5fc4af6-e8a3-4c1e-abd6-9c2a2a28d99c)
 
+
 #### status of booked slot 
 ![image](https://github.com/user-attachments/assets/4b02bf66-8dda-4512-b614-3460e301ff99)
+
+### Sign in Page 
+![image](https://github.com/user-attachments/assets/4722fb6a-6ca4-49b8-a8a1-d7d06ceb88bc)
+
+### Register Page 
+![image](https://github.com/user-attachments/assets/8634b1a8-eb43-471c-a539-f5fda1d92210)
 
 
 
