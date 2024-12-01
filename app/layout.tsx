@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Provider from "@/components/Provider";
+import AppBar from "@/components/Appbar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,7 +22,11 @@ export default function RootLayout({
   return (
   <html>
     <body className={geistSans.className}>
-      {children}
+      <Provider>
+        <AppBar>
+        {children}
+        </AppBar>
+      </Provider>
     </body>
   </html>
   );
