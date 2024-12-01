@@ -1,0 +1,18 @@
+id: register-slack-message
+namespace: hackfrost
+
+tasks:
+  # send message in administrator group
+  - id: send-user-register-message
+    type: io.kestra.plugin.notifications.slack.SlackIncomingWebhook
+    url: "slack url" 
+    payload: >
+      {
+        "channel": "#administrators",
+        "text": "Alert !!  {{(trigger.body | jq('.message'))[0]}}"
+      }
+
+triggers:
+  - id: webhook
+    type: io.kestra.plugin.core.trigger.Webhook
+    key: usermessage

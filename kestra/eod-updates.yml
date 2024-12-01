@@ -1,0 +1,52 @@
+id: eod-updates
+namespace: hackfrost
+
+tasks:
+  - id: getdoctors
+    type: io.kestra.plugin.mongodb.Find
+    connection:
+      uri: "mongo-url"
+    database: appointment-scheduler
+    collection: doctors
+    filter:
+      isValid: true 
+
+  - id: printdoctors
+    type: io.kestra.plugin.core.log.Log
+    message: "{{outputs.getdoctors.rows}}"
+
+  - id: eachparallelloop
+    type: io.kestra.plugin.core.flow.EachParallel
+    value: "{{ outputs.getdoctors.rows }}" 
+    tasks:
+      - id: printeachdoctor
+        type: io.kestra.plugin.core.log.Log
+        message : "Mesasage {{ taskrun.value | jq('._id') | substringBeforeLast(']') | substringAfter('[')  }}"
+
+      - id: gettodaysdoctorsappointments
+        type: io.kestra.plugin.mongodb.Find
+        connection:
+          uri: "mongo-url"
+        database: appointment-scheduler
+        collection: appointments
+        filter:
+          isConfirmed: true
+          doctorId:
+            $oid : "{{ taskrun.value | jq('._id') | substringBeforeLast(']') | substringAfter('[') }}"
+
+
+      - id: postonslack
+        type: io.kestra.plugin.notifications.slack.SlackIncomingWebhook
+        url: "slack url" 
+        payload: >
+          {
+            "channel": "#eod_updates",
+            "text": "This is the message {{taskrun.value | jq('.name')}}"
+            "appointments": "{{(outputs | jq('.gettodaysdoctorsappointments')) ?? (outputs | jq('.gettodaysdoctorsappointments') | jq('.rows')) | 'noapp' }}"
+          }
+
+triggers:
+  - id: daily
+    description: Send eod updates to channel at 8
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 20 * * *"
