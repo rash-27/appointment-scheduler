@@ -1,5 +1,6 @@
 import { connectToDB } from '@/utils/database';
 import User from '@/models/user';
+import axios from 'axios';
 // Update password of user
 export const POST = async (req, {params}) => {
     const { verifyOTP } = await req.json();
@@ -18,6 +19,11 @@ export const POST = async (req, {params}) => {
         user.verifyOTP = null;
         user.verifyOTPExpiry = null;
         await user.save();
+        const kestradomain = process.env.KESTRA_DOMAIN;
+        const message = `user ${user.name} with phone number ${user.phoneNumber} Registered`;
+        await axios.post(`${kestradomain}/api/v1/executions/webhook/hackfrost/register-slack-message/usermessage`,{
+          message : message
+        })
         return new Response('User verified', { status: 200 });
     } catch (error) {
         console.log(error);

@@ -1,0 +1,14 @@
+id: send-user-otp
+namespace: hackfrost
+
+tasks:
+  - id: send_data
+    type: io.kestra.plugin.core.http.Request
+    uri: "{backend-url}/api/user/{{(trigger.body | jq('.id'))[0]}}/sendotp"
+    method: POST
+    contentType: application/json
+
+triggers:
+  - id: webhooksend_data
+    type: io.kestra.plugin.core.trigger.Webhook
+    key: userotp

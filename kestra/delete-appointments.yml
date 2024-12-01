@@ -1,0 +1,19 @@
+id: delete-appointments
+namespace: hackfrost
+
+tasks:
+  - id: delete
+    type: io.kestra.plugin.mongodb.Delete
+    connection:
+      uri: mongodb+srv://rashmik2705:ztaSIT8oUbXKfSVq@cluster0.acr58ps.mongodb.net/
+    database: "appointment-scheduler"
+    collection: "appointments"
+    operation: "DELETE_MANY"
+    filter:
+      - isConfirmed : false
+
+triggers:
+  - id: daily
+    description: Delete appointments daily at 7PM 
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 19 * * *"

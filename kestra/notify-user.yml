@@ -1,0 +1,14 @@
+id: notify-user
+namespace: hackfrost
+
+tasks:
+  - id: send_data
+    type: io.kestra.plugin.core.http.Request
+    uri: "{backend-url}/api/doctor/{{(trigger.body | jq('.doctorId'))[0]}}/{{(trigger.body | jq('.appointmentId'))[0]}}/notify"
+    method: POST
+    contentType: application/json
+
+triggers:
+  - id: webhooksend_data
+    type: io.kestra.plugin.core.trigger.Webhook
+    key: notifyuser
