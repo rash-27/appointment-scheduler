@@ -1,6 +1,7 @@
 import { connectToDB } from '@/utils/database';
 import User from '@/models/user';
-import axios from 'axios';
+import { formatDate, formatTime } from '@/utils/utils';
+import { sendOtp } from '@/utils/sendotp';
 // Send OTP to a doctor
 export const POST = async (req, {params}) => {
     const otp = Math.floor(1000 + Math.random() * 9000);
@@ -11,10 +12,9 @@ export const POST = async (req, {params}) => {
         if (!user) {
             return new Response('User not found', { status: 404 });
         }
-        //await axios.post(`webHookUrl`,{
-        //  phoneNumber : user.phoneNumber,
-        //  otp : otp
-        //})
+        const validity = `${formatDate(new Date(Date.now() + 3600000))} - ${formatTime(new Date(Date.now() + 3600000))} IST`
+        const message = `Hello ${user.name} the otp to verify your account is ${otp} valid till ${validity}`
+        await sendOtp(message, user.phoneNumber);
         user.verifyOTP = otp;
         // 1 hour limit
         user.verifyOTPExpiry = Date.now() + 3600000; 

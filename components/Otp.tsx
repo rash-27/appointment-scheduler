@@ -4,7 +4,6 @@ import { Input as BaseInput } from '@mui/base/Input';
 import { Box, styled } from '@mui/system';
 import { ThemeContext } from './Appbar';
 import { Button as BaseButton, buttonClasses } from '@mui/base/Button';
-import Link from 'next/link';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -181,11 +180,13 @@ function OTP({
 
 export default function OTPInput({otp, setOtp}) {
   const {data : session} = useSession();
-  const theme = React.useContext(ThemeContext);
   const router = useRouter();
   function handleSendOTP(){
+
+    // calling the webhook
+    const kestradomain = process.env.KESTRA_DOMAIN;
     if(session.user.role == 'DOCTOR'){
-      axios.post(`/api/doctor/${session?.user.id}/sendotp`).
+      axios.post(`${kestradomain}/api/v1/executions/webhook/hackfrost/send-doctor-otp/doctorotp`)
       then((res)=>{
         if(res.status == 200){
           alert('OTP Sent to your registered Mobile Number!');
@@ -194,7 +195,7 @@ export default function OTPInput({otp, setOtp}) {
         }
       })
     }else {
-      axios.post(`/api/user/${session?.user.id}/sendotp`).
+      axios.post(`${kestradomain}/api/v1/executions/webhook/hackfrost/send-user-otp/userotp`)
       then((res)=>{
         if(res.status == 200){
           alert('OTP Sent to your registered Mobile Number!');
@@ -202,7 +203,6 @@ export default function OTPInput({otp, setOtp}) {
          alert('Something went wrong!!');
         }
       })
-
     }
   }
     

@@ -1,6 +1,7 @@
 import { connectToDB } from '@/utils/database';
 import Doctor from '@/models/doctor';
 import Appointment from '@/models/appointment';
+import axios from 'axios';
 // Reject an appointment
 export const POST = async (req, {params}) => {
 
@@ -15,7 +16,12 @@ export const POST = async (req, {params}) => {
         }
         appointment.isConfirmed = false;
         await appointment.save();
-        // send a notification to user about the rejection of the appointment 
+        // send a notification to user about the rejection of the appointment
+        const kestradomain = process.env.KESTRA_DOMAIN;
+        await axios.post(`${kestradomain}/api/v1/executions/webhook/hackfrost/notify-user/notifyuser`,{
+          doctorId : doctor._id,
+          appointmentId : appointment._id
+        })
         return new Response('Appointment rejected', { status: 200 });
           
     } catch (error) {
