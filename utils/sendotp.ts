@@ -1,7 +1,8 @@
 import twilio from "twilio";
 export const sendOtp =  async(message, phoneNumber) => {
-  
- const accountSid = process.env.TWILIO_SID;
+
+if(!process.env.TWILIO_ENABLED) return;
+const accountSid = process.env.TWILIO_SID;
 const authToken =  process.env.TWILIO_AUTH_TOKEN;
 const client = twilio(accountSid, authToken);
 

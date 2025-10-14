@@ -184,6 +184,8 @@ export default function OTPInput({otp, setOtp}) {
   function handleSendOTP(){
 
     // calling the webhook
+    
+    if(!process.env.KESTRA_ENABLED) return;
     const kestradomain = process.env.KESTRA_DOMAIN;
     if(session.user.role == 'DOCTOR'){
       axios.post(`${kestradomain}/api/v1/executions/webhook/hackfrost/send-doctor-otp/doctorotp`)

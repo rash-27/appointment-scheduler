@@ -19,11 +19,15 @@ export const POST = async (req, {params}) => {
         doctor.verifyOTP = null;
         doctor.verifyOTPExpiry = null;
         await doctor.save();
-        const kestradomain = process.env.KESTRA_DOMAIN;
-        const message = `Doctor ${doctor.name} with phone number ${doctor.phoneNumber} Registered`;
-        await axios.post(`${kestradomain}/api/v1/executions/webhook/hackfrost/register-slack-message/usermessage`,{
-          message : message
-        })
+
+        if(process.env.KESTRA_ENABLED){
+            const kestradomain = process.env.KESTRA_DOMAIN;
+            const message = `Doctor ${doctor.name} with phone number ${doctor.phoneNumber} Registered`;
+            await axios.post(`${kestradomain}/api/v1/executions/webhook/hackfrost/register-slack-message/usermessage`,{
+                message : message
+            })
+        }
+        
         return new Response('Doctor verified', { status: 200 });
     } catch (error) {
         console.log(error);
